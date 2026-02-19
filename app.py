@@ -23,13 +23,12 @@ import time
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", os.urandom(24))
 
-# Визначаємо async_mode: eventlet для продакшену, threading для локальної розробки
-_async_mode = "eventlet" if os.environ.get("RENDER") or os.environ.get("DYNO") else "threading"
+# Визначаємо async_mode: gevent для продакшену, threading для локальної розробки
+_async_mode = "threading"
 try:
-    if _async_mode == "eventlet":
-        import eventlet
-        eventlet.monkey_patch()
-except (ImportError, AttributeError):
+    import gevent
+    _async_mode = "gevent"
+except ImportError:
     _async_mode = "threading"
 
 socketio = SocketIO(
