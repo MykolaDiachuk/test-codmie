@@ -23,22 +23,14 @@ import time
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", os.urandom(24))
 
-# Визначаємо async_mode: gevent для продакшену, threading для локальної розробки
-_async_mode = "threading"
-try:
-    import gevent
-    _async_mode = "gevent"
-except ImportError:
-    _async_mode = "threading"
-
 socketio = SocketIO(
     app,
     cors_allowed_origins="*",
-    async_mode=_async_mode,
+    async_mode="threading",
     logger=False,
     engineio_logger=False,
 )
-print(f"[SocketIO] async_mode = {_async_mode}")
+print("[SocketIO] async_mode = threading")
 
 # ──────────────────────────────────────────────
 #  Ігрова логіка

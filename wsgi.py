@@ -1,11 +1,5 @@
 """WSGI entry point для продакшену (Render / Heroku / Railway)."""
 
-try:
-    from gevent import monkey
-    monkey.patch_all()
-except ImportError:
-    pass
-
 from app import app, socketio
 
 if __name__ == "__main__":
