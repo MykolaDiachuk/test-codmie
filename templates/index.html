@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Хрестики-Нолики 🎮 Online</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h1>✕ Хрестики-Нолики ◯</h1>
+
+        <!-- ═══════════ ГОЛОВНЕ МЕНЮ ═══════════ -->
+        <div id="menu" class="menu">
+            <p class="subtitle">Оберіть режим гри:</p>
+            <button class="btn btn-pvp" onclick="startGame('pvp')">
+                👥 Гравець vs Гравець
+            </button>
+            <button class="btn btn-pve" onclick="startGame('pve')">
+                🤖 Гравець vs Комп'ютер
+            </button>
+            <div class="divider"><span>або грай онлайн</span></div>
+            <button class="btn btn-online-create" onclick="showOnlineMenu('create')">
+                🌐 Створити кімнату
+            </button>
+            <button class="btn btn-online-join" onclick="showOnlineMenu('join')">
+                🔗 Приєднатися до кімнати
+            </button>
+        </div>
+
+        <!-- ═══════════ ОНЛАЙН ЛОБІ ═══════════ -->
+        <div id="online-lobby" class="menu hidden">
+            <!-- Створення кімнати -->
+            <div id="lobby-create" class="hidden">
+                <p class="subtitle">Створюємо кімнату…</p>
+                <div class="room-code-display">
+                    <span class="label">Код кімнати:</span>
+                    <span id="room-code-text" class="room-code">------</span>
+                    <button class="btn btn-copy" onclick="copyRoomCode()" title="Копіювати">📋</button>
+                </div>
+                <p id="lobby-status" class="lobby-status">⏳ Чекаємо суперника…</p>
+                <div class="lobby-spinner" id="lobby-spinner"></div>
+            </div>
+
+            <!-- Приєднання до кімнати -->
+            <div id="lobby-join" class="hidden">
+                <p class="subtitle">Введіть код кімнати:</p>
+                <div class="join-form">
+                    <input type="text" id="join-code-input" class="code-input"
+                           maxlength="6" placeholder="ABC123"
+                           autocomplete="off" spellcheck="false">
+                    <button class="btn btn-online-join" onclick="joinRoom()">Увійти 🚀</button>
+                </div>
+                <p id="join-error" class="error-msg hidden"></p>
+            </div>
+
+            <button class="btn btn-menu" onclick="backToMenu()" style="margin-top: 1.5rem;">
+                ← Назад до меню
+            </button>
+        </div>
+
+        <!-- ═══════════ ІГРОВА ДОШКА ═══════════ -->
+        <div id="game" class="game hidden">
+            <div class="status-bar">
+                <span id="status" class="status">Хід: X</span>
+                <span id="mode-badge" class="mode-badge"></span>
+            </div>
+
+            <!-- Онлайн інфо -->
+            <div id="online-info" class="online-info hidden">
+                <span id="your-symbol" class="your-symbol"></span>
+                <span id="online-room-code" class="online-room-code"></span>
+            </div>
+
+            <div class="board" id="board">
+                <!-- 9 клітинок -->
+            </div>
+
+            <!-- Оверлей результату -->
+            <div id="result-overlay" class="result-overlay hidden">
+                <div class="result-card">
+                    <span id="result-emoji" class="result-emoji">🎉</span>
+                    <p id="result-text" class="result-text">Переможець!</p>
+                    <p id="rematch-status" class="rematch-status hidden"></p>
+                    <div class="result-buttons">
+                        <button class="btn btn-restart" onclick="restartGame()">🔄 Грати ще</button>
+                        <button class="btn btn-menu" onclick="backToMenu()">📋 Меню</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="game-controls">
+                <button class="btn btn-restart" onclick="restartGame()">🔄 Нова гра</button>
+                <button class="btn btn-menu" onclick="backToMenu()">📋 Меню</button>
+            </div>
+
+            <!-- Лічильник -->
+            <div class="scoreboard">
+                <div class="score-item x-score">
+                    <span class="score-label">✕ (X)</span>
+                    <span id="score-x" class="score-value">0</span>
+                </div>
+                <div class="score-item draw-score">
+                    <span class="score-label">Нічия</span>
+                    <span id="score-draw" class="score-value">0</span>
+                </div>
+                <div class="score-item o-score">
+                    <span class="score-label">◯ (O)</span>
+                    <span id="score-o" class="score-value">0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toast повідомлення -->
+        <div id="toast" class="toast hidden"></div>
+    </div>
+
+    <!-- Socket.IO клієнт -->
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
